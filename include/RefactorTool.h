@@ -19,8 +19,9 @@ public:
     virtual void run(const clang::ast_matchers::MatchFinder::MatchResult &Result) override;
 
 private:
-    // 1. Невиртуальные деструкторы
-    void handle_nv_dtor(const clang::CXXDestructorDecl *Dtor, clang::DiagnosticsEngine &Diag, clang::SourceManager &SM);
+    // 1. Производные классы с невиртуальным деструктором родителя
+    void handle_derived_class(const clang::CXXRecordDecl *Derived, clang::DiagnosticsEngine &Diag,
+                              clang::SourceManager &SM);
 
     // 2. Методы без override
     void handle_miss_override(const clang::CXXMethodDecl *Method, clang::DiagnosticsEngine &Diag,
@@ -44,7 +45,7 @@ public:
     void HandleTranslationUnit(clang::ASTContext &Context) override;
 
 private:
-    clang::Rewriter &Rewrite;  
+    clang::Rewriter &Rewrite;
     RefactorHandler Handler;                  // Обработчик матчеров.
     clang::ast_matchers::MatchFinder Finder;  // MatchFinder для поиска узлов AST.
 };

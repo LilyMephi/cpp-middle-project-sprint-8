@@ -23,8 +23,8 @@ void RefactorHandler::run(const MatchFinder::MatchResult &Result) {
     auto &Diag = Result.Context->getDiagnostics();
     auto &SM = *Result.SourceManager;
 
-    if (const auto *Dtor = Result.Nodes.getNodeAs<CXXDestructorDecl>("classDecl")) {
-        handle_nv_dtor(Dtor, Diag, SM);
+    if (const auto *Record = Result.Nodes.getNodeAs<CXXRecordDecl>("derivedClass")) {
+        handle_derived_class(Record, Diag, SM);
     }
 
     if (const auto *Method = Result.Nodes.getNodeAs<CXXMethodDecl>("methodDecl")) {
@@ -38,38 +38,36 @@ void RefactorHandler::run(const MatchFinder::MatchResult &Result) {
     }
 }
 
-void RefactorHandler::handle_nv_dtor(const CXXDestructorDecl *Dtor, DiagnosticsEngine &Diag, SourceManager &SM) {
-    if (SM.isInSystemHeader(Dtor->getLocation()))
+void RefactorHandler::handle_derived_class(const CXXRecordDecl *Derived, DiagnosticsEngine &Diag, SourceManager &SM) {
+    if (!Derived->hasDefinition())
         return;
-    if (!Dtor->getTypeSourceInfo() || Dtor->hasAttr<OverrideAttr>() || Dtor->hasAttr<FinalAttr>())
-        return;
-    const CXXRecordDecl *Parent = Dtor->getParent();
-
-    if (!Parent || (Dtor->isVirtual() && !Parent->isPolymorphic()))
+    if (SM.isInSystemHeader(Derived->getLocation()))
         return;
 
-    bool is_derived = false;
-    const CXXRecordDecl *Parent = cast<CXXRecordDecl>(Dtor->getParent());
-    for (const auto &Base : Parent->bases()) {
-        if (const CXXRecordDecl *BaseDecl = Base.getType()->getAsCXXRecordDecl()) {
-            if (BaseDecl->getCanonicalDecl() ==
-                Target->getCanonicalDecl()) {  // Предполагается, что Target определен где-то
-                is_derived = true;
-                break;
-            }
-        }
-    }
-    if (!is_derived)
-        return;
-    const unsigned DiagID = Diag.getCustomDiagID(DiagnosticsEngine::Remark, "non-virtual destructor");
+    for (const auto &Base : Derived->bases()) {
+        const CXXRecordDecl *BaseRD = Base.getType()->getAsCXXRecordDecl();
+        if (!BaseRD)
+            continue;
 
-    SourceLocation DtorLoc = Dtor->getLocation();
-    FullSourceLoc FullLoc(DtorLoc, SM);
+        const CXXDestructorDecl *BaseDtor = BaseRD->getDestructor();
+        if (!BaseDtor || BaseDtor->isVirtual())
+            continue;
 
-    if (DtorLoc.isValid() && !Dtor->isImplicit()) {
-        SourceLocation InsertLoc = DtorLoc;
-        FixItHint FixIt = FixItHint::CreateInsertion(InsertLoc, "virtual ");
-        this->Rewrite.InsertText(InsertLoc, "virtual ");
+        if (BaseDtor->hasAttr<OverrideAttr>() || BaseDtor->hasAttr<FinalAttr>())
+            continue;
+
+        SourceLocation DtorLoc = BaseDtor->getLocation();
+        if (!DtorLoc.isValid() || BaseDtor->isImplicit())
+            continue;
+
+        llvm::errs() << "Found: " << BaseRD->getNameAsString() << " needs virtual dtor\n";
+
+        const unsigned DiagID = Diag.getCustomDiagID(DiagnosticsEngine::Remark, "base class needs virtual destructor");
+
+        FullSourceLoc FullLoc(DtorLoc, SM);
+
+        FixItHint FixIt = FixItHint::CreateInsertion(DtorLoc, "virtual ");
+        this->Rewrite.InsertText(DtorLoc, "virtual ");
         Diag.Report(FullLoc, DiagID) << FixIt;
     }
 }
@@ -132,7 +130,7 @@ void RefactorHandler::handle_crange_for(const CXXForRangeStmt *ForRange, Diagnos
         return cxxRecordDecl().bind("classDecl");
     }
 */
-auto NvDtorMatcher() { return cxxDestructorDecl(unless(isVirtual())).bind("classDecl"); }
+auto DerivedClassMatcher() { return cxxRecordDecl().bind("derivedClass"); }
 
 auto NoOverrideMatcher() { return cxxMethodDecl(hasParent(recordDecl())).bind("methodDecl"); }
 
@@ -143,7 +141,7 @@ auto NoRefConstVarInRangeLoopMatcher() {
 // Конструктор принимает Rewriter для изменения кода.
 ComplexConsumer::ComplexConsumer(Rewriter &Rewrite) : Rewrite(Rewrite), Handler(Rewrite) {
     // Создаем MatchFinder и добавляем матчеры.
-    Finder.addMatcher(NvDtorMatcher(), &Handler);
+    Finder.addMatcher(DerivedClassMatcher(), &Handler);
     Finder.addMatcher(NoOverrideMatcher(), &Handler);
     Finder.addMatcher(NoRefConstVarInRangeLoopMatcher(), &Handler);
 }
