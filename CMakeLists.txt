@@ -22,7 +22,7 @@ mark_as_advanced(CT_CLANG_PACKAGE_DIR)
 # LLVM is installed on your system.
 set(CT_Clang_INSTALL_DIR "${CT_CLANG_PACKAGE_DIR}" CACHE PATH
   "Clang installation directory")
-
+set(CT_Clang_INSTALL_DIR "/usr/lib/llvm-19")
 #===============================================================================
 # 1. VERIFY CLANG INSTALLATION DIR
 #===============================================================================
