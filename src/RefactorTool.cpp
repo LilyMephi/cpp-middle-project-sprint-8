@@ -171,6 +171,8 @@ void CodeRefactorAction::EndSourceFileAction() {
     }
 }
 
+#ifndef BUILD_TESTS
+
 int main(int argc, const char **argv) {
     // Парсер опций: Обрабатывает флаги командной строки, компиляционные базы данных.
     auto ExpectedParser = CommonOptionsParser::create(argc, argv, ToolCategory);
@@ -184,3 +186,5 @@ int main(int argc, const char **argv) {
     // Запускаем RefactorAction.
     return Tool.run(newFrontendActionFactory<CodeRefactorAction>().get());
 }
+
+#endif

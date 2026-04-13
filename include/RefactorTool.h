@@ -18,7 +18,6 @@ public:
     // Мы проверяем тип совпадения по bind-именам и применяем рефакторинг.
     virtual void run(const clang::ast_matchers::MatchFinder::MatchResult &Result) override;
 
-private:
     // 1. Производные классы с невиртуальным деструктором родителя
     void handle_derived_class(const clang::CXXRecordDecl *Derived, clang::DiagnosticsEngine &Diag,
                               clang::SourceManager &SM);

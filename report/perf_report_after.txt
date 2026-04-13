@@ -1,0 +1,73 @@
+# To display the perf.data header info, please use --header/--header-only options.
+#
+#
+# Total Lost Samples: 0
+#
+# Samples: 8K of event 'cycles'
+# Event count (approx.): 9593451847
+#
+# Overhead  Command  Shared Object         Symbol                                                                                                          
+# ........  .......  ....................  ................................................................................................................
+#
+    10.88%  main     [kernel.kallsyms]     [k] clear_page_erms
+    10.68%  main     main                  [.] std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::basic_string
+     9.71%  main     main                  [.] std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_is_local
+     7.82%  main     main                  [.] std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_set_length
+     6.89%  main     main                  [.] std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string
+     6.01%  main     main                  [.] std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_dispose
+     5.83%  main     main                  [.] std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_data
+     5.32%  main     main                  [.] std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_Alloc_hider::_Alloc_hider
+     5.22%  main     main                  [.] std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_Alloc_hider::~_Alloc_hider
+     3.64%  main     main                  [.] std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_local_data
+     3.56%  main     main                  [.] std::__new_allocator<char>::~__new_allocator
+     3.46%  main     main                  [.] std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_local_data
+     3.25%  main     main                  [.] std::__ptr_traits_ptr_to<char const*, char const, false>::pointer_to
+     3.19%  main     libc.so.6             [.] __memset_evex_unaligned_erms
+     3.06%  main     main                  [.] std::char_traits<char>::assign
+     2.90%  main     main                  [.] std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_length
+     2.43%  main     main                  [.] HeavyObject::~HeavyObject
+     2.30%  main     main                  [.] std::__ptr_traits_ptr_to<char*, char, false>::pointer_to
+     2.04%  main     main                  [.] HeavyObject::HeavyObject
+     0.64%  main     [kernel.kallsyms]     [k] clear_huge_page
+     0.22%  main     [kernel.kallsyms]     [k] get_page_from_freelist
+     0.19%  main     [kernel.kallsyms]     [k] its_return_thunk
+     0.17%  main     [kernel.kallsyms]     [k] check_new_pages
+     0.14%  main     [kernel.kallsyms]     [k] free_pcp_prepare
+     0.04%  main     [kernel.kallsyms]     [k] __cond_resched
+     0.03%  main     [kernel.kallsyms]     [k] page_counter_try_charge
+     0.03%  main     [kernel.kallsyms]     [k] sync_regs
+     0.02%  main     main                  [.] std::_Destroy<HeavyObject>
+     0.02%  main     [kernel.kallsyms]     [k] rcu_sched_clock_irq
+     0.02%  main     [kernel.kallsyms]     [k] trigger_load_balance
+     0.02%  main     [kernel.kallsyms]     [k] account_user_time
+     0.01%  main     [kernel.kallsyms]     [k] __list_del_entry_valid
+     0.01%  main     [kernel.kallsyms]     [k] lock_page_memcg
+     0.01%  main     [kernel.kallsyms]     [k] uncharge_folio
+     0.01%  main     [kernel.kallsyms]     [k] __list_add_valid
+     0.01%  main     [kernel.kallsyms]     [k] page_counter_uncharge
+     0.01%  main     [kernel.kallsyms]     [k] policy_node
+     0.01%  main     main                  [.] std::__uninitialized_default_n_1<false>::__uninit_default_n<HeavyObject*, unsigned long>
+     0.01%  main     [kernel.kallsyms]     [k] do_user_addr_fault
+     0.01%  main     [kernel.kallsyms]     [k] __page_set_anon_rmap
+     0.01%  main     [kernel.kallsyms]     [k] update_cfs_group
+     0.01%  main     [kernel.kallsyms]     [k] try_charge_memcg
+     0.01%  main     [kernel.kallsyms]     [k] __irq_exit_rcu
+     0.01%  main     [kernel.kallsyms]     [k] update_curr
+     0.01%  main     [kernel.kallsyms]     [k] __mod_node_page_state
+     0.01%  main     [kernel.kallsyms]     [k] qi_submit_sync
+     0.01%  main     [kernel.kallsyms]     [k] perf_event_task_tick
+     0.01%  main     [kernel.kallsyms]     [k] native_write_msr
+     0.01%  main     [kernel.kallsyms]     [k] memcg_check_events
+     0.01%  main     [kernel.kallsyms]     [k] __get_obj_cgroup_from_memcg
+     0.01%  main     ld-linux-x86-64.so.2  [.] do_lookup_x
+     0.01%  main     ld-linux-x86-64.so.2  [.] check_match
+     0.00%  main     [kernel.kallsyms]     [k] kmem_cache_alloc_bulk
+     0.00%  main     [kernel.kallsyms]     [k] vma_interval_tree_insert
+     0.00%  main     [kernel.kallsyms]     [k] native_irq_return_iret
+     0.00%  main     [kernel.kallsyms]     [k] __mod_lruvec_state
+     0.00%  main     ld-linux-x86-64.so.2  [.] __GI___tunables_init
+
+
+#
+# (Tip: Profiling branch (mis)predictions with: perf record -b / perf report)
+#
