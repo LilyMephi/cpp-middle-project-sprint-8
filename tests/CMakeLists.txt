@@ -32,9 +32,54 @@ FetchContent_MakeAvailable(googletest)
 # Рекурсивно ищем все используемые в тестах .cpp файлы
 file(GLOB TEST_SRC_FILES "${CMAKE_SOURCE_DIR}/tests/*.cpp")
 
-add_executable(${PROJECT_NAME}_tests "${TEST_SRC_FILES}")
-target_link_libraries(${PROJECT_NAME}_tests PRIVATE gtest_main)
-target_include_directories(${PROJECT_NAME}_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
+add_library(refactor_handler STATIC
+    ${CMAKE_SOURCE_DIR}/src/RefactorTool.cpp
+)
+target_include_directories(refactor_handler PRIVATE 
+    ${CMAKE_SOURCE_DIR}/include
+    ${LLVM_LIBRARY_DIRS}
+)
+target_compile_definitions(refactor_handler PRIVATE BUILD_TESTS)
+target_link_libraries(refactor_handler PRIVATE 
+    clangAST
+    clangBasic
+    clangFrontend
+    clangRewrite
+    clangTooling
+)
+
+add_executable(${PROJECT_NAME}_tests 
+    "${TEST_SRC_FILES}"
+)
+target_link_libraries(${PROJECT_NAME}_tests PRIVATE 
+    gtest_main 
+    refactor_handler
+    clangAST
+    clangBasic
+    clangFrontend
+    clangRewrite
+    clangTooling
+)
+target_include_directories(${PROJECT_NAME}_tests PRIVATE 
+    ${CMAKE_SOURCE_DIR}/include
+    ${LLVM_LIBRARY_DIRS}
+)
+
+# Exclude main from RefactorTool.cpp by using a custom target that compiles only needed symbols
+# We'll compile the source files separately
+target_link_libraries(${PROJECT_NAME}_tests PRIVATE 
+    gtest_main 
+    clangAST
+    clangBasic
+    clangFrontend
+    clangRewrite
+    clangTooling
+)
+target_include_directories(${PROJECT_NAME}_tests PRIVATE 
+    ${CMAKE_SOURCE_DIR}/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/include
+    ${LLVM_LIBRARY_DIRS}
+)
 
 
 include(GoogleTest)

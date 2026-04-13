@@ -11,7 +11,7 @@ class Derived : public Base {
 public:
     void func() override {}  // Переопределен без override
     void func(int a) override {}  // Переопределен без override
-    ~Derived() {}  // Деструктор без override
+    ~Derived() override {}  // Деструктор без override
 };
 
 class SubDerived : public Derived {

@@ -1,0 +1,20 @@
+=================================================================
+==2632764==ERROR: AddressSanitizer: new-delete-type-mismatch on 0x7b76d2ce0010 in thread T0:
+  object passed to delete has wrong type:
+  size of the allocated type:   8 bytes;
+  size of the deallocated type: 1 bytes.
+    #0 0x7f56d3f20c7b in operator delete(void*, unsigned long) ../../../../libsanitizer/asan/asan_new_delete.cpp:155
+    #1 0x000000401205 in main tests/tests_data/leak_example.cpp:18
+    #2 0x7f56d3845249 in __libc_start_call_main ../sysdeps/nptl/libc_start_call_main.h:58
+    #3 0x7f56d3845304 in __libc_start_main_impl ../csu/libc-start.c:360
+    #4 0x0000004010e0 in _start (/home/chernikova/practicum/cpp-middle-project-sprint-8/main+0x4010e0)
+
+0x7b76d2ce0010 is located 0 bytes inside of 8-byte region [0x7b76d2ce0010,0x7b76d2ce0018)
+allocated by thread T0 here:
+    #0 0x7f56d3f1fd1b in operator new(unsigned long) ../../../../libsanitizer/asan/asan_new_delete.cpp:86
+    #1 0x0000004011bc in main tests/tests_data/leak_example.cpp:17
+    #2 0x7f56d3845249 in __libc_start_call_main ../sysdeps/nptl/libc_start_call_main.h:58
+
+SUMMARY: AddressSanitizer: new-delete-type-mismatch tests/tests_data/leak_example.cpp:18 in main
+==2632764==HINT: if you don't care about these errors you may set ASAN_OPTIONS=new_delete_type_mismatch=0
+==2632764==ABORTING
